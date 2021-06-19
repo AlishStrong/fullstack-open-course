@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
 
+const Button = ({text, giveFeedback}) => {
+  return (
+    <button onClick={giveFeedback}>{text}</button>
+  );
+}
+
+const Statistic = ({text, value}) => {
+  return (
+    <p>{text} {value} {text === 'positive' ? '%' : ''}</p>
+  )
+}
+
 const Statistics = ({good, neutral, bad, history, getAverage, getPositive}) => {
   if (history.length === 0) {
     return (
@@ -13,12 +25,12 @@ const Statistics = ({good, neutral, bad, history, getAverage, getPositive}) => {
       <>
         <h1>statistics</h1>
         <div>
-          <p>good {good}</p>
-          <p>neutral {neutral}</p>
-          <p>bad {bad}</p>
-          <p>all {history.length}</p>
-          <p>average {getAverage}</p>
-          <p>positive {getPositive} %</p>
+          <Statistic text='good' value={good} />
+          <Statistic text='neutral' value={neutral} />
+          <Statistic text='bad' value={bad} />
+          <Statistic text='all' value={history.length} />
+          <Statistic text='average' value={getAverage} />
+          <Statistic text='positive' value={getPositive} />
         </div>
       </>
     );
@@ -54,9 +66,9 @@ const App = () => {
     <div>
       <h1>give feedback</h1>
       <div>
-        <button onClick={giveFeedback(1)}>good</button>
-        <button onClick={giveFeedback(0)}>neutral</button>
-        <button onClick={giveFeedback(-1)}>bad</button>
+        <Button text='good' giveFeedback={giveFeedback(1)} />
+        <Button text='neutral' giveFeedback={giveFeedback(0)} />
+        <Button text='bad' giveFeedback={giveFeedback(-1)} />
       </div>
       <Statistics 
         good={good} 

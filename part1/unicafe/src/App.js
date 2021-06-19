@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 
+const Statistics = ({good, neutral, bad, history, getAverage, getPositive}) => {
+  return (
+    <>
+      <h1>statistics</h1>
+      <div>
+        <p>good {good}</p>
+        <p>neutral {neutral}</p>
+        <p>bad {bad}</p>
+        <p>all {history.length}</p>
+        <p>average {getAverage}</p>
+        <p>positive {getPositive} %</p>
+      </div>
+    </>
+  );
+}
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
@@ -33,15 +49,14 @@ const App = () => {
         <button onClick={giveFeedback(0)}>neutral</button>
         <button onClick={giveFeedback(-1)}>bad</button>
       </div>
-      <h1>statistics</h1>
-      <div>
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
-        <p>all {history.length}</p>
-        <p>average {getAverage()}</p>
-        <p>positive {getPositive()} %</p>
-      </div>
+      <Statistics 
+        good={good} 
+        bad={bad} 
+        neutral={neutral} 
+        history={history} 
+        getAverage={getAverage()} 
+        getPositive={getPositive()} 
+      />
     </div>
   )
 }

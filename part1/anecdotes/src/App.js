@@ -28,12 +28,31 @@ const App = () => {
     setPoints(pointsCopy);
   }
 
+  const getMostVoted = () => {
+    const index = points.indexOf(points.reduce(
+        (pr, cr) => {
+          if (cr > pr) {
+            return cr;
+          } else if (cr < pr) {
+            return pr;
+          } else {
+            return pr;
+          }
+        }
+      )
+    );
+    return anecdotes[index];
+  }
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {points[selected]}</p>
       <button onClick={vote()}>vote</button>
       <button onClick={randomize()}>next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      <p>{getMostVoted()}</p>
     </div>
   )
 }

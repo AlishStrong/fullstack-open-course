@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Filter from './Filter';
+import PersonForm from './PersonForm';
+import Persons from './Persons';
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -20,7 +23,7 @@ const App = () => {
 
   const submitName = (event) => {
     event.preventDefault();
-    if (persons.map(person => person.name).includes(newName)) {
+    if (persons.map(person => person.name.toLocaleLowerCase()).includes(newName.toLocaleLowerCase())) {
       alert(`${newName} is already added to phonebook`);
     } else {
       setPersons(persons.concat({ name: newName, number: newNumber }));
@@ -32,23 +35,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-          filter shown with <input value={searchName} onChange={searchChange} />
-      </div>
+      <Filter searchName={searchName} searchChange={searchChange} />
       <h2>add a new</h2>
-      <form onSubmit={submitName}>
-        <div>
-          name: <input value={newName} onChange={nameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={numberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm 
+        submitName={submitName} 
+        newName={newName} 
+        newNumber={newNumber} 
+        nameChange={nameChange} 
+        numberChange={numberChange} 
+      />
       <h2>Numbers</h2>
-      {people.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
+      <Persons people={people} />
     </div>
   )
 }

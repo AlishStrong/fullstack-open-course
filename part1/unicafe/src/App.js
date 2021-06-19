@@ -8,7 +8,10 @@ const Button = ({text, giveFeedback}) => {
 
 const Statistic = ({text, value}) => {
   return (
-    <p>{text} {value} {text === 'positive' ? '%' : ''}</p>
+    <tr>
+      <td>{text}</td>
+      <td>{value} {text === 'positive' ? '%' : ''}</td>
+    </tr>
   )
 }
 
@@ -24,14 +27,16 @@ const Statistics = ({good, neutral, bad, history, getAverage, getPositive}) => {
     return (
       <>
         <h1>statistics</h1>
-        <div>
-          <Statistic text='good' value={good} />
-          <Statistic text='neutral' value={neutral} />
-          <Statistic text='bad' value={bad} />
-          <Statistic text='all' value={history.length} />
-          <Statistic text='average' value={getAverage} />
-          <Statistic text='positive' value={getPositive} />
-        </div>
+        <table>
+          <tbody>
+            <Statistic text='good' value={good} />
+            <Statistic text='neutral' value={neutral} />
+            <Statistic text='bad' value={bad} />
+            <Statistic text='all' value={history.length} />
+            <Statistic text='average' value={getAverage} />
+            <Statistic text='positive' value={getPositive} />
+          </tbody>
+        </table>
       </>
     );
   }

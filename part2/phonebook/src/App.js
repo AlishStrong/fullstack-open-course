@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
+  const [persons, setPersons] = useState([]);
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ searchName, setSearchName ] = useState('');
@@ -32,6 +28,18 @@ const App = () => {
     }
   };
 
+  const getPeopleHook = () => {
+    const handlePeople = response => {
+      setPersons(response.data);
+    };
+
+    const peoplePromise = axios.get('http://localhost:3001/persons');
+    peoplePromise.then(handlePeople);
+    peoplePromise.catch(console.error)
+  };
+
+  useEffect(getPeopleHook, []);
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -47,7 +55,7 @@ const App = () => {
       <h2>Numbers</h2>
       <Persons people={people} />
     </div>
-  )
+  );
 }
 
 export default App;

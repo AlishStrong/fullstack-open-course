@@ -25,10 +25,19 @@ const ShowCountries = ({countries, search}) => {
     }))
   }, [search, countries]);
 
+  const showCountryData = (country) => () => setFilteredCountries([country]);
+
   if (filteredCountries.length === 1) {
     toReturn = <CountryData country={filteredCountries[0]} />;
   } else if (filteredCountries.length <= 10) {
-    toReturn = <div>{filteredCountries.map(c => <div key={c.cioc + c.name}>{c.name}</div>)}</div>;
+    toReturn = 
+      <div>
+        {filteredCountries.map(c => 
+          <div key={c.cioc + c.name}>
+            {c.name} <button onClick={showCountryData(c)}>show</button>
+          </div>
+        )}
+      </div>;
   } else {
     toReturn = <div>Too many matches, please specify another filter</div>;
   }

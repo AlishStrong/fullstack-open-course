@@ -1,11 +1,11 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
+import PersonsService from './PersonsService';
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
+  const [ persons, setPersons ] = useState([]);
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ searchName, setSearchName ] = useState('');
@@ -22,20 +22,20 @@ const App = () => {
     if (persons.map(person => person.name.toLocaleLowerCase()).includes(newName.toLocaleLowerCase())) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      setNewName('');
-      setNewNumber('');
+      const newPerson = { name: newName, number: newNumber };
+      PersonsService.createPerson(newPerson)
+        .then(person => setPersons(persons.concat(person)))
+        .catch(_ => alert(`An issue happened trying to save a person ${newPerson.name} with number ${newPerson.number}`))
+        .finally(() => {
+          setNewName('');
+          setNewNumber('');
+        });
     }
   };
 
   const getPeopleHook = () => {
-    const handlePeople = response => {
-      setPersons(response.data);
-    };
-
-    const peoplePromise = axios.get('http://localhost:3001/persons');
-    peoplePromise.then(handlePeople);
-    peoplePromise.catch(console.error)
+    PersonsService.getAllPeople()
+      .then(people => setPersons(people));
   };
 
   useEffect(getPeopleHook, []);

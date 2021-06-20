@@ -16,7 +16,7 @@ const App = () => {
   useEffect(getAllCountriesHook, []);
 
   const searchChange = event => setSearch(event.target.value);
-
+  
   return (
     <div>
       <SearchCountry search={search} searchChange={searchChange} />

@@ -18,6 +18,10 @@ const updatePerson = (personId, personData) => axios.put(`${baseUrl}/${personId}
   .then(res => res.data)
   .catch(console.error);
 
-const PersonsService = { getAllPeople, getPerson, createPerson, updatePerson };
+const deletePerson = (personId) => axios.delete(`${baseUrl}/${personId}`)
+.then(res => res.data)
+.catch(console.error);
+
+const PersonsService = { getAllPeople, getPerson, createPerson, updatePerson, deletePerson };
 export default PersonsService;
   

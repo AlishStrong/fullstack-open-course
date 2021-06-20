@@ -40,6 +40,10 @@ const App = () => {
 
   useEffect(getPeopleHook, []);
 
+  const removePerson = (personId) => {
+    setPersons(persons.filter(p => p.id !== personId));
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -53,7 +57,7 @@ const App = () => {
         numberChange={numberChange} 
       />
       <h2>Numbers</h2>
-      <Persons people={people} />
+      <Persons people={people} removePerson={removePerson} />
     </div>
   );
 }

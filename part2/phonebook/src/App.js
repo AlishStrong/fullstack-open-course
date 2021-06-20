@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Filter from './Filter';
+import Notification from './Notification';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
 import PersonsService from './PersonsService';
@@ -9,6 +10,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ searchName, setSearchName ] = useState('');
+  const [ message, setMessage ] = useState({});
 
   const nameChange = (event) => setNewName(event.target.value);
   const numberChange = (event) => setNewNumber(event.target.value);
@@ -22,10 +24,18 @@ const App = () => {
     setNewNumber('');
   };
 
+  const notify = (text, type) => {
+    setMessage({text, type});
+    setTimeout(() => setMessage({text: '', type: ''}), 5000);
+  }
+
   const addPerson = () => {
     const newPerson = { name: newName, number: newNumber };
     PersonsService.createPerson(newPerson)
-      .then(person => setPersons(persons.concat(person)))
+      .then(person => {
+        setPersons(persons.concat(person));
+        notify(`Added ${person.name}`, 'added');
+      })
       .catch(_ => alert(`An issue happened trying to save a person ${newPerson.name} with number ${newPerson.number}`))
       .finally(clearInputs);
   };
@@ -33,11 +43,19 @@ const App = () => {
   const updatePerson = foundPerson => {
     const updatedPerson = {...foundPerson, number: newNumber};
     PersonsService.updatePerson(foundPerson.id, updatedPerson)
-      .then(person => setPersons(persons.map(p => p.id === person.id ? person : p)))
+      .then(person => {
+        setPersons(persons.map(p => p.id === person.id ? person : p));
+        notify(`Updated ${person.name}`, 'updated');
+      })
+      .catch(_ => {
+        notify(`Information of ${foundPerson.name} has laready been removed from server`, 'error');
+        setPersons(persons.filter(p => p.id !== foundPerson.id));
+      })
       .finally(clearInputs);
   };
 
   const removePerson = (personId) => {
+    notify(`Removed ${persons.find(p => p.id === personId).name}`, 'deleted');
     setPersons(persons.filter(p => p.id !== personId));
   }
 
@@ -72,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter searchName={searchName} searchChange={searchChange} />
       <h2>add a new</h2>
       <PersonForm 

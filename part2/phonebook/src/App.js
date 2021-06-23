@@ -36,7 +36,18 @@ const App = () => {
         setPersons(persons.concat(person));
         notify(`Added ${person.name}`, 'added');
       })
-      .catch(_ => alert(`An issue happened trying to save a person ${newPerson.name} with number ${newPerson.number}`))
+      .catch(error => {
+        if (error.response.data.error) {
+          if (error.response.data.error.includes('to be unique')) {
+            notify(error.response.data.error + '. Refetching the phonebook list!', 'error');
+            getPeopleHook();
+          } else {
+            notify(error.response.data.error, 'error');
+          }
+        } else {
+          notify(`An issue occured while trying to update the person`, 'error');
+        }
+      })
       .finally(clearInputs);
   };
 
@@ -47,9 +58,15 @@ const App = () => {
         setPersons(persons.map(p => p.id === person.id ? person : p));
         notify(`Updated ${person.name}`, 'updated');
       })
-      .catch(_ => {
-        notify(`Information of ${foundPerson.name} has laready been removed from server`, 'error');
-        setPersons(persons.filter(p => p.id !== foundPerson.id));
+      .catch(error => {
+        if (error.response.data.error) {
+          notify(error.response.data.error, 'error');
+        } else if (+error.response.status !== 500) {
+          notify(`Information of ${foundPerson.name} has laready been removed from server`, 'error');
+          setPersons(persons.filter(p => p.id !== foundPerson.id));
+        } else {
+          notify(`An issue occured while trying to update the person`, 'error');
+        }
       })
       .finally(clearInputs);
   };
@@ -63,7 +80,7 @@ const App = () => {
     event.preventDefault();
     
     const foundPerson = persons.find(person => {
-      return person.name.toLocaleLowerCase().includes(newName.toLocaleLowerCase());
+      return person.name.trim().toLocaleLowerCase() === newName.trim().toLocaleLowerCase();
     });
     
     if (foundPerson) {

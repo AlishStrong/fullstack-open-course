@@ -93,6 +93,23 @@ test('blog is deleted', async () => {
 	expect(blogsAtEnd).not.toContain(blogToDelete);
 });
 
+test('blog is updated', async () => {
+	let response = await api.get(blogsPath);
+	const blogsAtStart = response.body;
+	const blogToUpdate = blogsAtStart[0];
+
+	blogToUpdate.likes = 1000;
+
+	response = await api
+		.put(`${blogsPath}/${blogToUpdate.id}`)
+		.send(blogToUpdate)
+		.expect(200);
+
+	const updatedBlog = response.body;
+
+	expect(updatedBlog.likes).toBe(1000);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });

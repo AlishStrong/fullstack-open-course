@@ -34,16 +34,47 @@ test('blog is created', async () => {
 	};
 
 	const result = await api
-		.post(blogsPath)
+		.post('/api/blogs')
 		.send(newBlog)
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
-    
-  expect(result.body.id).toBeDefined();
+
+	expect(result.body.id).toBeDefined();
 
 	const blogsAtEnd = await helper.blogsInDb();
 	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 	expect(blogsAtEnd.map(b => b.title)).toContain(newBlog.title);
+});
+
+test('Blog.likes propperty defaults to 0', async () => {
+	const newBlog = {
+		title: 'Default property test',
+		author: 'Artur Clarke',
+		url: 'https://nodejs-testing.com/default-property'
+	};
+
+	const result = await api
+		.post(blogsPath)
+		.send(newBlog)
+		.expect(200)
+		.expect('Content-Type', /application\/json/);
+
+	expect(result.body.likes).toBeDefined();
+	expect(result.body.likes).toBe(0);
+});
+
+test('Fails if title and url property values are missing', async () => {
+	const newBlog = {
+		author: 'Artur Clarke'
+	};
+
+	const result = await api
+		.post(blogsPath)
+		.send(newBlog)
+		.expect(400);
+
+	expect(result.body.error).toBeDefined();
+	expect(result.body.error).toContain('validation failed');
 });
 
 afterAll(() => {

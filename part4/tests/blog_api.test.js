@@ -33,11 +33,13 @@ test('blog is created', async () => {
 		likes: 12
 	};
 
-	await api
+	const result = await api
 		.post(blogsPath)
 		.send(newBlog)
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
+    
+  expect(result.body.id).toBeDefined();
 
 	const blogsAtEnd = await helper.blogsInDb();
 	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);

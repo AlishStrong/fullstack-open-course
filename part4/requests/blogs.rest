@@ -1,0 +1,15 @@
+@blogsUrl = http://localhost:3001/api/blogs
+
+### Get all blog entries
+GET {{blogsUrl}}
+
+### Add a new blog entry
+POST {{blogsUrl}}
+Content-Type: application/json
+
+{
+	"title": "NodeJS: first steps",
+	"author": "Alisher Aliev",
+	"url": "https://alishstrong.com/blog/nodejs-first-steps",
+	"likes": 5
+}

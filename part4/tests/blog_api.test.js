@@ -34,7 +34,7 @@ test('blog is created', async () => {
 	};
 
 	const result = await api
-		.post('/api/blogs')
+		.post(blogsPath)
 		.send(newBlog)
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
@@ -75,6 +75,22 @@ test('Fails if title and url property values are missing', async () => {
 
 	expect(result.body.error).toBeDefined();
 	expect(result.body.error).toContain('validation failed');
+});
+
+test('blog is deleted', async () => {
+	let response = await api.get(blogsPath);
+	const blogsAtStart = response.body;
+	const blogToDelete = blogsAtStart[0];
+
+	await api
+		.delete(`${blogsPath}/${blogToDelete.id}`)
+		.expect(204);
+
+	response = await api.get(blogsPath);
+	const blogsAtEnd = response.body;
+
+	expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
+	expect(blogsAtEnd).not.toContain(blogToDelete);
 });
 
 afterAll(() => {

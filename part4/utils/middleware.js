@@ -1,4 +1,5 @@
 const logger = require('./logger');
+const config = require('./config');
 
 const requestLogger = (request, _, next) => {
   logger.info('Method:', request.method);
@@ -24,8 +25,22 @@ const errorHandler = (error, _, response, next) => {
   next(error);
 };
 
+const tokenExtractor = (request, response, next) => {
+  if (request.url === config.BLOGS_PATH && request.method !== 'GET') {
+    const authorization = request.get('authorization');
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+      request.token = authorization.substring(7);
+    } else {
+      response.status(401).json({ error: 'token missing or invalid' });
+    }
+  }
+
+  next();
+};
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 };

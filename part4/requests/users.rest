@@ -1,0 +1,14 @@
+@usersUrl = http://localhost:3001/api/users
+
+### Get all users
+GET {{usersUrl}}
+
+### Add a new user
+POST {{usersUrl}}
+Content-Type: application/json
+
+{
+	"username": "alish_strong",
+  "name": "Alisher Aliev",
+  "password": "12345"
+}

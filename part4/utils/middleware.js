@@ -26,7 +26,8 @@ const errorHandler = (error, _, response, next) => {
 };
 
 const tokenExtractor = (request, response, next) => {
-  if (request.url === config.BLOGS_PATH && request.method !== 'GET') {
+  if (request.url.includes(config.BLOGS_PATH) && request.method !== 'GET') {
+
     const authorization = request.get('authorization');
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
       request.token = authorization.substring(7);

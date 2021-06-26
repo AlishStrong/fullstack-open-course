@@ -8,8 +8,8 @@ POST {{usersUrl}}
 Content-Type: application/json
 
 {
-	"username": "alish_strong",
-  "name": "Alisher Aliev",
+	"username": "new_user",
+  "name": "New User",
   "password": "12345"
 }
 

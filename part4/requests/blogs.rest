@@ -25,3 +25,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsa
 	"url": "https://alishstrong.com/blog/nodejs-first-steps",
 	"likes": 5
 }
+
+### Delete a blog, fails
+DELETE {{blogsUrl}}/60d6ffee983c2a49b4fbb5d0
+Authorization: bearer 

@@ -14,7 +14,6 @@ const createBlog = async (request, response) => {
   const blog = new Blog({ ...body, user: user._id });
 
   const savedBlog = await blog.save();
-
   user.blogs = user.blogs.concat(savedBlog._id);
   await user.save();
   response.json(savedBlog);
@@ -22,6 +21,8 @@ const createBlog = async (request, response) => {
 
 const updateBlog = async (request, response) => {
   const body = request.body;
+
+
 
   const blog = {
     likes: body.likes

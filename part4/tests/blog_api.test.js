@@ -2,16 +2,38 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./test_helper');
 const config = require('../utils/config');
+const bcrypt = require('bcrypt');
 
 const api = supertest(app);
 const blogsPath = config.BLOGS_PATH;
 
+let newUser = {};
+
+beforeAll(async () => {
+  // clear users in DB
+  await User.deleteMany({});
+
+  // add user to DB
+  const userObj = {
+    username: 'alish_strong',
+    name: 'Alisher Aliev',
+    password: '12345'
+  };
+
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(userObj.password, saltRounds);
+  userObj.password = passwordHash;
+  newUser = new User(userObj);
+  await newUser.save();
+});
+
 beforeEach(async () => {
   await Blog.deleteMany({});
   const blogPromises = helper.initialBlogs
-    .map(b => new Blog(b))
+    .map(b => new Blog({ ...b, user: newUser._id }))
     .map(b => b.save());
   await Promise.all(blogPromises);
 });
@@ -33,8 +55,17 @@ test('blog is created', async () => {
     likes: 12
   };
 
+  const loginResponse = await api
+    .post('/api/login').send({
+      username: 'alish_strong',
+      password: '12345'
+    });
+
+  const authToken = loginResponse.body.token;
+
   const result = await api
     .post(blogsPath)
+    .auth(authToken, { type: 'bearer' })
     .send(newBlog)
     .expect(200)
     .expect('Content-Type', /application\/json/);
@@ -55,8 +86,17 @@ test('Blog.likes propperty defaults to 0', async () => {
     url: 'https://nodejs-testing.com/default-property'
   };
 
+  const loginResponse = await api
+    .post('/api/login').send({
+      username: 'alish_strong',
+      password: '12345'
+    });
+
+  const authToken = loginResponse.body.token;
+
   const result = await api
     .post(blogsPath)
+    .auth(authToken, { type: 'bearer' })
     .send(newBlog)
     .expect(200)
     .expect('Content-Type', /application\/json/);
@@ -70,8 +110,17 @@ test('Fails if title and url property values are missing', async () => {
     author: 'Artur Clarke'
   };
 
+  const loginResponse = await api
+    .post('/api/login').send({
+      username: 'alish_strong',
+      password: '12345'
+    });
+
+  const authToken = loginResponse.body.token;
+
   const result = await api
     .post(blogsPath)
+    .auth(authToken, { type: 'bearer' })
     .send(newBlog)
     .expect(400);
 
@@ -79,13 +128,36 @@ test('Fails if title and url property values are missing', async () => {
   expect(result.body.error).toContain('validation failed');
 });
 
+test('Fails if authorization token is missing', async () => {
+  const newBlog = {
+    author: 'Artur Clarke'
+  };
+
+  const result = await api
+    .post(blogsPath)
+    .send(newBlog)
+    .expect(401);
+
+  expect(result.body.error).toBeDefined();
+  expect(result.body.error).toContain('token');
+});
+
 test('blog is deleted', async () => {
   let response = await api.get(blogsPath);
   const blogsAtStart = response.body;
   const blogToDelete = blogsAtStart[0];
 
+  const loginResponse = await api
+    .post('/api/login').send({
+      username: 'alish_strong',
+      password: '12345'
+    });
+
+  const authToken = loginResponse.body.token;
+
   await api
     .delete(`${blogsPath}/${blogToDelete.id}`)
+    .auth(authToken, { type: 'bearer' })
     .expect(204);
 
   response = await api.get(blogsPath);
@@ -102,8 +174,17 @@ test('blog is updated', async () => {
 
   blogToUpdate.likes = 1000;
 
+  const loginResponse = await api
+    .post('/api/login').send({
+      username: 'alish_strong',
+      password: '12345'
+    });
+
+  const authToken = loginResponse.body.token;
+
   response = await api
     .put(`${blogsPath}/${blogToUpdate.id}`)
+    .auth(authToken, { type: 'bearer' })
     .send(blogToUpdate)
     .expect(200);
 

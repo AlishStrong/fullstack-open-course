@@ -4,6 +4,7 @@ const app = require('../app');
 const User = require('../models/user');
 const helper = require('./user_test_helper');
 const config = require('../utils/config');
+const bcrypt = require('bcrypt');
 
 const api = supertest(app);
 const usersPath = config.USERS_PATH;
@@ -11,8 +12,18 @@ const usersPath = config.USERS_PATH;
 beforeEach(async () => {
   await User.deleteMany({});
   const userPromises = helper.initialUsers
-    .map(b => new User(b))
-    .map(b => b.save());
+    .map(async (b) => {
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(b.password, saltRounds);
+
+      const user = new User({
+        username: b.username,
+        name: b.name,
+        password: passwordHash
+      });
+
+      return user.save();
+    });
   await Promise.all(userPromises);
 });
 

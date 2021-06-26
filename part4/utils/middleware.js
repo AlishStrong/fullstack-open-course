@@ -40,15 +40,17 @@ const tokenExtractor = (request, response, next) => {
 };
 
 const userExtractor = (request, response, next) => {
-  if (request.method !== 'GET' && request.token) {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' });
+  if (request.method !== 'GET') {
+    if (request.token) {
+      const decodedToken = jwt.verify(request.token, process.env.SECRET);
+      if (!decodedToken.id) {
+        return response.status(401).json({ error: 'token missing or invalid' });
+      }
+      const userObjectId = new mongoose.Types.ObjectId(decodedToken.id);
+      request.user = userObjectId;
+    } else {
+      response.status(401).json({ error: 'token missing or invalid' });
     }
-    const userObjectId = new mongoose.Types.ObjectId(decodedToken.id);
-    request.user = userObjectId;
-  } else {
-    response.status(401).json({ error: 'token missing or invalid' });
   }
 
   next();

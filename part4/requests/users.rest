@@ -12,3 +12,11 @@ Content-Type: application/json
   "name": "Alisher Aliev",
   "password": "12345"
 }
+
+### Add a user without username and password
+POST {{usersUrl}}
+Content-Type: application/json
+
+{
+  "name": "Alisher Aliev"
+}

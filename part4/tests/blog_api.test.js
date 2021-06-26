@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./test_helper');
 const config = require('../utils/config');
 
 const api = supertest(app);
 const blogsPath = config.BLOGS_PATH;
 
-beforeEach( async () => {
+beforeEach(async () => {
   await Blog.deleteMany({});
   const blogPromises = helper.initialBlogs
     .map(b => new Blog(b))
@@ -43,7 +44,9 @@ test('blog is created', async () => {
 
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
-  expect(blogsAtEnd.map(b => b.title)).toContain(newBlog.title);
+
+  const addedBlog = blogsAtEnd.find(b => b.title === newBlog.title);
+  expect(addedBlog.user).toBeDefined();
 });
 
 test('Blog.likes propperty defaults to 0', async () => {

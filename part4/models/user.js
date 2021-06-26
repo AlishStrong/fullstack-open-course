@@ -10,7 +10,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     minLength: 3
   },
-  name: String
+  name: String,
+  blogs: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Blog'
+  }]
 });
 
 userSchema.set('toJSON', {

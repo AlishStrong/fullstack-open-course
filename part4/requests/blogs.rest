@@ -17,7 +17,7 @@ Content-Type: application/json
 ### Add a new blog entry, authenticated
 POST {{blogsUrl}}
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsaXNoX3N0cm9uZyIsImlkIjoiNjBkNmE2N2E2NmQ3YzIyMDQ0NzhjNjllIiwiaWF0IjoxNjI0NzAxNjI5fQ.XTyjDoh9XaMgcbMwRA6OWLDnVMIb9EXE50MEX6HXOWA
+Authorization: bearer add-string
 
 {
 	"title": "NodeJS: first steps",

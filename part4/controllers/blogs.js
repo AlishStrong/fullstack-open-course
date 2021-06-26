@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
@@ -11,14 +10,7 @@ const getAllBlogs = async (_, response) => {
 
 const createBlog = async (request, response) => {
   const body = request.body;
-
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' });
-  }
-
-  const user = await User.findById(decodedToken.id);
-
+  const user = await User.findById(request.user);
   const blog = new Blog({ ...body, user: user._id });
 
   const savedBlog = await blog.save();
@@ -40,15 +32,9 @@ const updateBlog = async (request, response) => {
 };
 
 const deleteBlog = async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' });
-  }
-
-  const userObjectId = new mongoose.Types.ObjectId(decodedToken.id);
   const blogsId = new mongoose.Types.ObjectId(request.params.id);
 
-  await Blog.deleteOne({ _id: blogsId, user: userObjectId });
+  await Blog.deleteOne({ _id: blogsId, user: request.user });
   response.status(204).end();
 };
 

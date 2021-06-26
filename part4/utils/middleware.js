@@ -1,5 +1,6 @@
 const logger = require('./logger');
-const config = require('./config');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const requestLogger = (request, _, next) => {
   logger.info('Method:', request.method);
@@ -26,8 +27,7 @@ const errorHandler = (error, _, response, next) => {
 };
 
 const tokenExtractor = (request, response, next) => {
-  if (request.url.includes(config.BLOGS_PATH) && request.method !== 'GET') {
-
+  if (request.method !== 'GET') {
     const authorization = request.get('authorization');
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
       request.token = authorization.substring(7);
@@ -39,9 +39,25 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
+const userExtractor = (request, response, next) => {
+  if (request.method !== 'GET' && request.token) {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' });
+    }
+    const userObjectId = new mongoose.Types.ObjectId(decodedToken.id);
+    request.user = userObjectId;
+  } else {
+    response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  next();
+};
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 };

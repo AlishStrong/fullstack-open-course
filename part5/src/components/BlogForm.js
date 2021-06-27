@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import blogService from '../services/blogs';
 
-const BlogForm = ({ handleResponse, callback }) => {
+const BlogForm = ({ sumbitBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -10,26 +9,10 @@ const BlogForm = ({ handleResponse, callback }) => {
   const authorChange = (event) => setAuthor(event.target.value);
   const urlChange = (event) => setUrl(event.target.value);
 
-  const submitBlog = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     clearInputs();
-    try {
-      const response = await blogService.createBlog({
-        title,
-        author,
-        url
-      });
-      handleResponse({
-        type: 'added',
-        text: `a new blog ${response.title} by ${response.author} added`
-      }, callback);
-    } catch (error) {
-      console.log(error);
-      handleResponse({
-        type: 'error',
-        text: error.response.data.error
-      });
-    }
+    sumbitBlog({ title, author, url });
   };
 
   const clearInputs = () => {
@@ -41,15 +24,15 @@ const BlogForm = ({ handleResponse, callback }) => {
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={submitBlog}>
+      <form onSubmit={handleSubmit}>
         <div>
-          title: <input value={title} onChange={titleChange} />
+          title: <input id='titleInput' value={title} onChange={titleChange} />
         </div>
         <div>
-          author: <input value={author} onChange={authorChange} />
+          author: <input id='authorInput' value={author} onChange={authorChange} />
         </div>
         <div>
-          url: <input value={url} onChange={urlChange} />
+          url: <input id='urlInput' value={url} onChange={urlChange} />
         </div>
         <div>
           <button type="submit">create</button>

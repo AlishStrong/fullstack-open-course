@@ -19,11 +19,25 @@ const App = () => {
     blogService.setToken(loggedUser.token);
   };
 
-  const handleResponse = (response, callback = null) => {
-    setMessage(response);
-    if (callback) {
-      callback();
+  const sumbitBlog = async (newBlog) => {
+    try {
+      const response = await blogService.createBlog(newBlog);
+      handleResponse({
+        type: 'added',
+        text: `a new blog ${response.title} by ${response.author} added`
+      });
+    } catch (error) {
+      handleResponse({
+        type: 'error',
+        text: error.response.data.error
+      });
+    } finally {
+      completeBlogAddition();
     }
+  };
+
+  const handleResponse = (response) => {
+    setMessage(response);
     setTimeout(() => setMessage({ text: '', type: '' }), 5000);
   };
 
@@ -76,7 +90,7 @@ const App = () => {
         <Notification message={message} />
         <p>{user.name} is logged in <button onClick={logout}>logout</button> </p>
         <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-          <BlogForm handleResponse={handleResponse} callback={completeBlogAddition} />
+          <BlogForm sumbitBlog={sumbitBlog} />
         </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} username={user.username} />

@@ -38,11 +38,22 @@ const App = () => {
       setBlogs( blogs );
     });  
   };
-
+  
   const logout = () => {
     window.localStorage.removeItem('loggedNoteappUser');
     setUser(null);
     blogService.setToken(null);
+  };
+
+  const likeBlog = async (blog) => {
+    blog.likes += 1;
+    await blogService.updateBlog(blog);
+    fetchBlogs();
+  }
+
+  const removeBlog = async (blogId) => {
+    await blogService.deleteBlog(blogId);
+    fetchBlogs();
   };
 
   useEffect(() => {
@@ -68,7 +79,7 @@ const App = () => {
           <BlogForm handleResponse={handleResponse} callback={completeBlogAddition} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} username={user.username} />
         )}
       </div>
     );

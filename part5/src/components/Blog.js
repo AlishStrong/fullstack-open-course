@@ -1,27 +1,20 @@
-import React, { useState } from 'react';
-import blogService from '../services/blogs';
+import React, { useEffect, useState } from 'react';
 
-const BlogDetails = ({blog, view}) => {
-  const [ blogDetails, setBlogDetails ] = useState({ ...blog });
-
+const BlogDetails = ({ blog, view, likeBlog, removeBlog }) => {
   const blogDetailsStyle = {
     marginTop: 5
   };
 
-  const likeBlog = async () => {
-    const blogToUpdate = blogDetails;
-    blogToUpdate.likes += 1;
-    const updatedBlog = await blogService.updateBlog(blogToUpdate);
-    updatedBlog.user = blogToUpdate.user;
-    setBlogDetails(updatedBlog);
-  }
+  const incrementLike = () => likeBlog(blog);
+  const remove = () => removeBlog(blog.id);
 
-  if (view && blogDetails) {
+  if (view && blog) {
     return (
       <div style={blogDetailsStyle}>
-        <div>{blogDetails.url}</div>
-        <div>{blogDetails.likes} <button onClick={likeBlog}>like</button></div>
-        { blogDetails.user ? <div>{blogDetails.user.name}</div> : null }
+        <div>{blog.url}</div>
+        <div>{blog.likes} <button onClick={incrementLike}>like</button></div>
+        { blog.user ? <div>{blog.user.name}</div> : null }
+        { blog.removable ? <div><button onClick={remove}>remove</button></div> : null}
       </div>
     );
   } else {
@@ -29,7 +22,7 @@ const BlogDetails = ({blog, view}) => {
   }
 };
 
-const Blog = ({blog}) => {
+const Blog = ({ blog, likeBlog, removeBlog, username }) => {
   const [ view, setView ] = useState(false);
 
   const blogStyle = {
@@ -40,12 +33,18 @@ const Blog = ({blog}) => {
     marginBottom: 10
   };
 
+  useEffect(() => {
+    if (blog.user && blog.user.username === username) {
+      blog.removable = true;
+    }
+  }, [blog, username]);
+
   const toggleView = () => setView(!view);
 
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} <button onClick={toggleView}>{view ? 'hide' : 'view'}</button>
-      <BlogDetails blog={blog} view={view} />
+      <BlogDetails blog={blog} view={view} likeBlog={likeBlog} removeBlog={removeBlog} />
     </div>
   );  
 };

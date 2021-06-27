@@ -4,9 +4,9 @@ let token = null;
 
 const setToken = newToken => token = `bearer ${newToken}`;
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl);
+  return response.data;
 }
 
 const createBlog = async (newBlog) => {
@@ -27,5 +27,13 @@ const updateBlog = async (blogToUpdate) => {
   return response.data;
 }
 
-const blogService = { setToken, getAll, createBlog, updateBlog };
+const deleteBlog = async (blogId) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  await axios.delete(`${baseUrl}/${blogId}`, config);
+};
+
+const blogService = { setToken, getAll, createBlog, updateBlog, deleteBlog };
 export default blogService;

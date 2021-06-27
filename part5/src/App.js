@@ -7,7 +7,7 @@ import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [ message, setMessage ] = useState({});
 

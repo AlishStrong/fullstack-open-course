@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
+import blogService from '../services/blogs';
 
 const BlogDetails = ({blog, view}) => {
+  const [ blogDetails, setBlogDetails ] = useState({ ...blog });
+
   const blogDetailsStyle = {
     marginTop: 5
   };
 
-  if (view && blog) {
+  const likeBlog = async () => {
+    const blogToUpdate = blogDetails;
+    blogToUpdate.likes += 1;
+    const updatedBlog = await blogService.updateBlog(blogToUpdate);
+    updatedBlog.user = blogToUpdate.user;
+    setBlogDetails(updatedBlog);
+  }
+
+  if (view && blogDetails) {
     return (
       <div style={blogDetailsStyle}>
-        <div>{blog.url}</div>
-        <div>{blog.likes}</div>
-        { blog.user ? <div>{blog.user.name}</div> : null }
+        <div>{blogDetails.url}</div>
+        <div>{blogDetails.likes} <button onClick={likeBlog}>like</button></div>
+        { blogDetails.user ? <div>{blogDetails.user.name}</div> : null }
       </div>
     );
   } else {

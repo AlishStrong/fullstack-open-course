@@ -15,7 +15,7 @@ const BlogDetails = ({ blog, view, likeBlog, removeBlog }) => {
         <div>{blog.url}</div>
         <div className='likes'>{blog.likes} <button className='likeButton' onClick={incrementLike}>like</button></div>
         { blog.user ? <div>{blog.user.name}</div> : null }
-        { blog.removable ? <div><button onClick={remove}>remove</button></div> : null}
+        { blog.removable ? <div><button className='remove' onClick={remove}>remove</button></div> : null}
       </div>
     );
   } else {
@@ -35,6 +35,8 @@ const Blog = ({ blog, likeBlog, removeBlog, username }) => {
   };
 
   useEffect(() => {
+    console.log(blog);
+    console.log(username);
     if (blog.user && blog.user.username === username) {
       blog.removable = true;
     }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import blogService from '../services/blogs';
 
-const BlogForm = ({handleResponse}) => {
+const BlogForm = ({handleResponse, callback}) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -12,13 +12,24 @@ const BlogForm = ({handleResponse}) => {
 
   const submitBlog = async (event) => {
     event.preventDefault();
-    const response = await blogService.createBlog({
-      title,
-      author,
-      url
-    });
     clearInputs();
-    handleResponse(response);
+    try {
+      const response = await blogService.createBlog({
+        title,
+        author,
+        url
+      });
+      handleResponse({
+        type: 'added',
+        text: `a new blog ${response.title} by ${response.author} added`
+      }, callback);
+    } catch (error) {
+      console.log(error);
+      handleResponse({
+        type: 'error',
+        text: error.response.data.error
+      });
+    }
   }
 
   const clearInputs = () => {

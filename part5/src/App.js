@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null);
+  const [ message, setMessage ] = useState({});
 
   const handleUser = loggedUser => {
     window.localStorage.setItem('loggedNoteappUser', JSON.stringify(loggedUser))
@@ -14,12 +16,18 @@ const App = () => {
     blogService.setToken(loggedUser.token);
   };
 
-  const handleResponse = response => {
-    if (handleResponse) {
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      );  
+  const handleResponse = (response, callback = null) => {
+    setMessage(response);
+    if (callback) {
+      callback();
     }
+    setTimeout(() => setMessage({text: '', type: ''}), 5000);
+  }
+
+  const fetchBlogs = () => {
+    blogService.getAll().then(blogs =>
+      setBlogs( blogs )
+    );  
   }
 
   const logout = () => {
@@ -29,9 +37,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
@@ -47,8 +53,9 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
+        <Notification message={message} />
         <p>{user.name} is logged in <button onClick={logout}>logout</button> </p>
-        <BlogForm handleResponse={handleResponse} />
+        <BlogForm handleResponse={handleResponse} callback={fetchBlogs} />
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
@@ -56,7 +63,10 @@ const App = () => {
     );
   } else {
     return (
-      <LoginForm handleUser={handleUser} />
+      <div>
+        <Notification message={message} />
+        <LoginForm handleUser={handleUser} handleResponse={handleResponse} />
+      </div>
     );
   }
 }

@@ -14,12 +14,8 @@ const createBlog = async (newBlog) => {
     headers: { Authorization: token },
   };
 
-  try {
-    const response = await axios.post(baseUrl, newBlog, config);
-    return response.data;
-  } catch (error) {
-    console.error('createBlog error', error);
-  }
+  const response = await axios.post(baseUrl, newBlog, config);
+  return response.data;
 }
 
 const blogService = { setToken, getAll, createBlog };

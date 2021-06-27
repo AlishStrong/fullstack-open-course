@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import loginService from '../services/login';
 
-const LoginForm = ({handleUser}) => {
+const LoginForm = ({handleUser, handleResponse}) => {
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState(''); 
 
@@ -14,8 +14,11 @@ const LoginForm = ({handleUser}) => {
       setUsername('');
       setPassword('');
       handleUser(user);
-    } catch (exception) {
-      alert('wrong credentials');
+    } catch (error) {
+      handleResponse({
+        type: 'error',
+        text: error.response.data.error
+      })
     }
   }
 

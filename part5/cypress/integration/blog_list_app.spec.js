@@ -43,4 +43,44 @@ describe('Blog app', function() {
       });
     });
   });
+
+  describe('5.19: bloglist end to end testing, step3', function() {
+    beforeEach(function() {
+      const user = {
+        name: 'Alisher Aliev',
+        username: 'username',
+        password: 'password'
+      };
+      cy.request('POST', 'http://localhost:3003/api/users/', user);
+    });
+
+    describe('When logged in', function() {
+      beforeEach(function() {
+        cy.get('#usernameInput').type('username');
+        cy.get('#passwordInput').type('password');
+        cy.get('#login-button').click();
+
+        cy.contains('Alisher Aliev is logged in');
+      });
+
+      it('A blog can be created', function() {
+        cy.get('#create-button').contains('create new blog').click();
+
+        cy.get('#titleInput').parent().contains('title');
+        cy.get('#authorInput').parent().contains('author');
+        cy.get('#urlInput').parent().contains('url');
+
+        cy.get('#titleInput').type('Title-test');
+        cy.get('#authorInput').type('Author-test');
+        cy.get('#urlInput').type('Url-test');
+        cy.get('#create-blog-button').contains('create').click();
+
+        cy.get('#create-button').contains('create new blog').click();
+        cy.get('.added')
+          .should('contain', 'a new blog Title-test by Author-test added')
+          .should('have.css', 'color', 'rgb(0, 128, 0)');
+        cy.contains('Title-test Author-test');
+      });
+    });
+  });
 });

@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null);
   const [ message, setMessage ] = useState({});
+
+  const blogFormRef = useRef()
 
   const handleUser = loggedUser => {
     window.localStorage.setItem('loggedNoteappUser', JSON.stringify(loggedUser))
@@ -22,6 +25,11 @@ const App = () => {
       callback();
     }
     setTimeout(() => setMessage({text: '', type: ''}), 5000);
+  }
+
+  const completeBlogAddition = () => {
+    blogFormRef.current.toggleVisibility();
+    fetchBlogs();
   }
 
   const fetchBlogs = () => {
@@ -55,7 +63,9 @@ const App = () => {
         <h2>blogs</h2>
         <Notification message={message} />
         <p>{user.name} is logged in <button onClick={logout}>logout</button> </p>
-        <BlogForm handleResponse={handleResponse} callback={fetchBlogs} />
+        <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+          <BlogForm handleResponse={handleResponse} callback={completeBlogAddition} />
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}

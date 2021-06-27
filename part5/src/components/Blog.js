@@ -13,7 +13,7 @@ const BlogDetails = ({ blog, view, likeBlog, removeBlog }) => {
     return (
       <div style={blogDetailsStyle}>
         <div>{blog.url}</div>
-        <div>{blog.likes} <button className='likeButton' onClick={incrementLike}>like</button></div>
+        <div className='likes'>{blog.likes} <button className='likeButton' onClick={incrementLike}>like</button></div>
         { blog.user ? <div>{blog.user.name}</div> : null }
         { blog.removable ? <div><button onClick={remove}>remove</button></div> : null}
       </div>

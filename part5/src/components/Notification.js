@@ -1,4 +1,6 @@
-const Notification = ({message}) => {
+import React from 'react';
+
+const Notification = ({ message }) => {
   if (message.text) {
     return (
       <div className={message.type}>
@@ -8,6 +10,6 @@ const Notification = ({message}) => {
   } else {
     return null;
   }
-}
+};
 
 export default Notification;

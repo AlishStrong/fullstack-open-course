@@ -47,14 +47,14 @@ const Blog = ({ blog, likeBlog, removeBlog, username }) => {
       {blog.title} {blog.author} <button onClick={toggleView}>{view ? 'hide' : 'view'}</button>
       <BlogDetails blog={blog} view={view} likeBlog={likeBlog} removeBlog={removeBlog} />
     </div>
-  );  
+  );
 };
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired, 
-  likeBlog: PropTypes.func.isRequired, 
-  removeBlog: PropTypes.func.isRequired, 
+  blog: PropTypes.object.isRequired,
+  likeBlog: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired
-}
+};
 
-export default Blog
+export default Blog;

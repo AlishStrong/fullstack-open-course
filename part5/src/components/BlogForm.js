@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import blogService from '../services/blogs';
 
-const BlogForm = ({handleResponse, callback}) => {
+const BlogForm = ({ handleResponse, callback }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -30,13 +30,13 @@ const BlogForm = ({handleResponse, callback}) => {
         text: error.response.data.error
       });
     }
-  }
+  };
 
   const clearInputs = () => {
     setTitle('');
     setAuthor('');
     setUrl('');
-  }
+  };
 
   return (
     <div>

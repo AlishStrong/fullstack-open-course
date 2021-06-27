@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import loginService from '../services/login';
 
-const LoginForm = ({handleUser, handleResponse}) => {
-  const [username, setUsername] = useState(''); 
-  const [password, setPassword] = useState(''); 
+const LoginForm = ({ handleUser, handleResponse }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     try {
       const user = await loginService.login({
         username, password,
-      })
+      });
       setUsername('');
       setPassword('');
       handleUser(user);
@@ -18,9 +18,9 @@ const LoginForm = ({handleUser, handleResponse}) => {
       handleResponse({
         type: 'error',
         text: error.response.data.error
-      })
+      });
     }
-  }
+  };
 
   return (
     <div>
@@ -28,7 +28,7 @@ const LoginForm = ({handleUser, handleResponse}) => {
       <form onSubmit={handleLogin}>
         <div>
           username
-            <input
+          <input
             type="text"
             value={username}
             name="Username"
@@ -37,7 +37,7 @@ const LoginForm = ({handleUser, handleResponse}) => {
         </div>
         <div>
           password
-            <input
+          <input
             type="password"
             value={password}
             name="Password"
@@ -45,9 +45,9 @@ const LoginForm = ({handleUser, handleResponse}) => {
           />
         </div>
         <button type="submit">login</button>
-      </form> 
+      </form>
     </div>
-  )
-}
-    
+  );
+};
+
 export default LoginForm;

@@ -11,10 +11,10 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [ message, setMessage ] = useState({});
 
-  const blogFormRef = useRef()
+  const blogFormRef = useRef();
 
   const handleUser = loggedUser => {
-    window.localStorage.setItem('loggedNoteappUser', JSON.stringify(loggedUser))
+    window.localStorage.setItem('loggedNoteappUser', JSON.stringify(loggedUser));
     setUser(loggedUser);
     blogService.setToken(loggedUser.token);
   };
@@ -24,21 +24,21 @@ const App = () => {
     if (callback) {
       callback();
     }
-    setTimeout(() => setMessage({text: '', type: ''}), 5000);
-  }
+    setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+  };
 
   const completeBlogAddition = () => {
     blogFormRef.current.toggleVisibility();
     fetchBlogs();
-  }
+  };
 
   const fetchBlogs = () => {
     blogService.getAll().then(blogs => {
-      blogs.sort(({likes: a}, {likes: b}) => b - a);
+      blogs.sort(({ likes: a }, { likes: b }) => b - a);
       setBlogs( blogs );
-    });  
+    });
   };
-  
+
   const logout = () => {
     window.localStorage.removeItem('loggedNoteappUser');
     setUser(null);
@@ -49,7 +49,7 @@ const App = () => {
     blog.likes += 1;
     await blogService.updateBlog(blog);
     fetchBlogs();
-  }
+  };
 
   const removeBlog = async (blogId) => {
     await blogService.deleteBlog(blogId);
@@ -67,7 +67,7 @@ const App = () => {
       setUser(user);
       blogService.setToken(user.token);
     }
-  }, [])
+  }, []);
 
   if (user) {
     return (
@@ -91,6 +91,6 @@ const App = () => {
       </div>
     );
   }
-}
+};
 
 export default App;

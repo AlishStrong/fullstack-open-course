@@ -7,7 +7,7 @@ const setToken = newToken => token = `bearer ${newToken}`;
 const getAll = async () => {
   const response = await axios.get(baseUrl);
   return response.data;
-}
+};
 
 const createBlog = async (newBlog) => {
   const config = {
@@ -16,7 +16,7 @@ const createBlog = async (newBlog) => {
 
   const response = await axios.post(baseUrl, newBlog, config);
   return response.data;
-}
+};
 
 const updateBlog = async (blogToUpdate) => {
   const config = {
@@ -25,7 +25,7 @@ const updateBlog = async (blogToUpdate) => {
 
   const response = await axios.put(`${baseUrl}/${blogToUpdate.id}`, blogToUpdate, config);
   return response.data;
-}
+};
 
 const deleteBlog = async (blogId) => {
   const config = {

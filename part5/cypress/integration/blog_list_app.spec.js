@@ -84,7 +84,7 @@ describe('Blog app', function() {
     });
   });
 
-  describe('5.20-5.21: bloglist end to end testing, step4', function() {
+  describe('5.20-5.21: bloglist end to end testing, step4-5', function() {
     beforeEach(function() {
       const user = {
         name: 'Alisher Aliev',
@@ -135,6 +135,88 @@ describe('Blog app', function() {
       cy.get('.showDetails').click();
       cy.get('.remove').click();
       cy.should('not.contain', 'title author');
+    });
+  });
+
+  describe('5.22: bloglist end to end testing, step6', function() {
+    beforeEach(function() {
+      const user = {
+        name: 'Alisher Aliev',
+        username: 'username',
+        password: 'password'
+      };
+      cy.request('POST', 'http://localhost:3003/api/users/', user);
+
+      cy.get('#usernameInput').type('username');
+      cy.get('#passwordInput').type('password');
+      cy.get('#login-button').click();
+
+      const credentials = {
+        username: 'username',
+        password: 'password'
+      };
+
+      const blogTop = {
+        title: 'blog-top',
+        author: 'author-top',
+        url: 'url-top',
+        likes: 100
+      };
+
+      const blogMid = {
+        title: 'blog-mid',
+        author: 'author-mid',
+        url: 'url-mid',
+        likes: 50
+      };
+
+      const blogBot = {
+        title: 'blog-bot',
+        author: 'author-bot',
+        url: 'url-bot'
+      };
+
+      cy.request('POST', 'http://localhost:3003/api/login/', credentials)
+        .then(response => {
+          cy.request({
+            method: 'POST',
+            url: 'http://localhost:3003/api/blogs/',
+            body: blogBot,
+            headers: {
+              Authorization: 'bearer ' + response.body.token
+            }
+          });
+          cy.request({
+            method: 'POST',
+            url: 'http://localhost:3003/api/blogs/',
+            body: blogTop,
+            headers: {
+              Authorization: 'bearer ' + response.body.token
+            }
+          });
+          cy.request({
+            method: 'POST',
+            url: 'http://localhost:3003/api/blogs/',
+            body: blogMid,
+            headers: {
+              Authorization: 'bearer ' + response.body.token
+            }
+          });
+        });
+    });
+
+    it('User can like a blog', function() {
+      cy.visit('http://localhost:3000');
+      cy.get('#blog-entries').get('.showDetails')
+        .then(c => {
+          c.click();
+        });
+      cy.get('#blog-entries').find('.likes')
+        .then(c => {
+          expect(c[0]).to.contain(100);
+          expect(c[1]).to.contain(50);
+          expect(c[2]).to.contain(0);
+        });
     });
   });
 });

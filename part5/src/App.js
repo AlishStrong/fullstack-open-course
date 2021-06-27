@@ -33,10 +33,11 @@ const App = () => {
   }
 
   const fetchBlogs = () => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    );  
-  }
+    blogService.getAll().then(blogs => {
+      blogs.sort(({likes: a}, {likes: b}) => b - a);
+      setBlogs( blogs );
+    });  
+  };
 
   const logout = () => {
     window.localStorage.removeItem('loggedNoteappUser');

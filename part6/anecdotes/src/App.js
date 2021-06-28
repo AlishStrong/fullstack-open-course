@@ -4,7 +4,7 @@ import AnecdoteForm from './components/AnecdoteForm';
 import { voteAction } from './reducers/anecdoteReducer';
 
 const App = () => {
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => state.sort(({votes: a}, {votes: b}) => b - a))
   const dispatch = useDispatch()
 
   const vote = (id) => {

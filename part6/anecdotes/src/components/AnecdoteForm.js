@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { addAction } from '../reducers/anecdoteReducer';
 
 const AnecdoteForm = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const createAnecdote = (event) => {
     event.preventDefault();
@@ -15,7 +15,7 @@ const AnecdoteForm = () => {
     <div>
       <h2>create new</h2>
       <form onSubmit={createAnecdote}>
-        <input name="anecdote" /> 
+        <input name="anecdote" />
         <button type="submit">create</button>
       </form>
     </div>

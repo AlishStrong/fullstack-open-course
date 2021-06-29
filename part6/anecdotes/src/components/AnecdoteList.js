@@ -18,9 +18,13 @@ const AnecdoteList = () => {
   }, [dispatch]);
 
   const vote = (anecdote) => {
-    dispatch(voteAction(anecdote.id));
-    dispatch(votedAction(anecdote.content));
-    setTimeout(() => dispatch(resetAction()), 5000);
+    const votedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
+    anecdoteService.updateAnecdote(votedAnecdote)
+      .then(updatedAnecdote => {
+        dispatch(voteAction(updatedAnecdote.id));
+        dispatch(votedAction(updatedAnecdote.content));
+        setTimeout(() => dispatch(resetAction()), 5000);
+      });
   };
 
   return (

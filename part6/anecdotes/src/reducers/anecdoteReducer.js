@@ -26,19 +26,22 @@ export const voteAction = (anecdoteId) => {
   };
 };
 
-export const addAction = (anecdote) => {
-  return {
-    type: 'ADD',
-    data: { anecdote }
-  };
-};
-
 export const initializeAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll();
     dispatch({
       type: 'INIT',
       data: anecdotes
+    });
+  };
+};
+
+export const addAnecdote = content => {
+  return async dispatch => {
+    const anecdote = await anecdoteService.createAnecdote(content);
+    dispatch({
+      type: 'ADD',
+      data: { anecdote }
     });
   };
 };

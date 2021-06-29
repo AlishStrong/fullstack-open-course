@@ -5,10 +5,8 @@ const anecdoteReducer = (state = [], action) => {
   case 'INIT':
     return action.data;
   case 'VOTE': {
-    const anecdoteId = action.data.anecdoteId;
-    const anecdoteToVote = state.find(a => a.id === anecdoteId);
-    const votedAnecdote = { ...anecdoteToVote, votes: anecdoteToVote.votes + 1 };
-    return state.map(a => a.id === anecdoteId ? votedAnecdote : a);
+    const anecdote = action.data.anecdote;
+    return state.map(a => a.id === anecdote.id ? anecdote : a);
   }
   case 'ADD': {
     const anecdote = action.data.anecdote;
@@ -17,13 +15,6 @@ const anecdoteReducer = (state = [], action) => {
   default:
     return state;
   }
-};
-
-export const voteAction = (anecdoteId) => {
-  return {
-    type: 'VOTE',
-    data: { anecdoteId }
-  };
 };
 
 export const initializeAnecdotes = () => {
@@ -41,6 +32,16 @@ export const addAnecdote = content => {
     const anecdote = await anecdoteService.createAnecdote(content);
     dispatch({
       type: 'ADD',
+      data: { anecdote }
+    });
+  };
+};
+
+export const voteForAnecdote = content => {
+  return async dispatch => {
+    const anecdote = await anecdoteService.updateAnecdote({ ...content, votes: content.votes + 1 });
+    dispatch({
+      type: 'VOTE',
       data: { anecdote }
     });
   };

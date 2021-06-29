@@ -9,10 +9,12 @@ const filterReducer = (state = '', action) => {
   }
 };
 
-export const setFilterAction = (filter) => {
-  return {
-    type: 'SET',
-    data: filter
+export const setFilter = (filter) => {
+  return async dispatch => {
+    dispatch({
+      type: 'SET',
+      data: filter
+    });
   };
 };
 

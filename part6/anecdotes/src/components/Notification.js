@@ -11,11 +11,11 @@ const Notification = ({ notification }) => {
 
   const componentBody = (
     <div style={style}>
-      {notification}
+      {notification.message}
     </div>
   );
 
-  return notification ? componentBody : null;
+  return notification.message ? componentBody : null;
 };
 
 const mapStateToProps = (state) => {
